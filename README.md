@@ -40,5 +40,16 @@ This assumes you have Python, Flask and SQLite installed in your computer, as we
 from cs50 import SQL</code><br />
 <code>from flask_session import Session</code><br />
 <code>from flask import Flask, render_template, redirect, request, session, jsonify</code><br />
-<code>from datetime import datetime</code>
+<code>from datetime import datetime</code><br />
+
+<code>
+<code>
+deliverly address</code><br />
+checkout info</code><br />
+product description</code><br />
+support</code><br />
+search optimiziation</code><br />
+</code><br />
+</code><br />
+
 

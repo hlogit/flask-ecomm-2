@@ -12,7 +12,10 @@ Soccer Jersey Store - Home
               <div class="card text-center">
                   <div class="card-body">
                     <form action="/buy/" methods="POST">
+					<a href=./prod?id="{{shirts[i]["id"]}}>
                       <img src="/static/img/{{shirts[i]["image"]}}" class="shirt" alt="" />
+					</a>
+					 <h6>{{shirts[i]["desc"]}}</h6>
                       <h5 class="card-title">{{shirts[i]["team"]}}</h5>
                       {% if shirts[i]["onSale"] %}
                         <img src="/static/img/sale-icon.png" width="26px" />

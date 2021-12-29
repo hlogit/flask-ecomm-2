@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}
+Soccer Jersey Store - Home
+{% endblock %}
+{{shirts[i]["image"]}}
+{% block body %}
+<!-- Main Store Body -->
+      <div class="row" id="shirtCard">
+          <div class="col-sm">
+              <div class="card text-center">
+                  <div class="card-body">
+      <table border =0>
+
+	  <tr><td>
+	  <img src="/static/img/{% print(shirts[0]["image"]) %}" class="shirt" alt="" /></td></tr>
+	  <tr><td>{{ shirts["team"]}}</td></tr>
+	  {% if shirts[0]["onSale"] %}
+	  	  <tr><td>{{shirts[0]["onSalePrice"]}}</td></tr>
+	  {% else %}
+	  	  <tr><td>{{shirts[0]["price"]}}</td></tr>
+	  {% endif %}
+	  <tr><td></td></tr>
+	  <tr><td></td></tr>
+	  	  <tr><td>{{shirts[0]["desc"]}}</td></tr>
+	  </table>
+
+      </div>
+      </div>
+      </div>
+    </div>
+  </main>
+
+{% endblock %}

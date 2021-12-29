@@ -31,9 +31,6 @@ Once you're finished, you can just log out.
 
 If you want to see the app in action, fork the repository to your own computer and perform the following commands from the command line in your project folder:
 
-<code>export FLASK_APP=application.py</code><br />
-<code>flask run</code>
-
 This assumes you have Python, Flask and SQLite installed in your computer, as well as a link to Bootstrap and the following modules necessary to run application.py installed:
 
 <code>
@@ -51,5 +48,10 @@ support</code><br />
 search optimiziation</code><br />
 </code><br />
 </code><br />
+pip install cs50</code><br />
+pip install flask_session</code><br />
+</code><br />
 
+<code>export FLASK_APP=application.py</code><br />
+<code>flask run</code>
 

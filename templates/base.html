@@ -68,16 +68,16 @@
                       <tr>
                         <td colSpan="7">Total: {{ '${:,.2f}'.format(total) }}<br /><br />
                           <div class="modal-footer">
-                            <a href="/cart/"><button type="button" class="btn btn-primary checkout">Make Changes</button></a>
-                            <button type="button" class="btn btn-primary checkout" data-dismiss="modal">Continue Shopping</button>
-                            <a href="/checkout/"><button type="button" class="btn btn-success checkout">Quick Checkout</button></a>
+                            <a href="/cart/"><button type="button" class="btn btn-primary checkout">修改訂單</button></a>
+                            <button type="button" class="btn btn-primary checkout" data-dismiss="modal">再逛逛</button>
+                            <a href="/checkout/"><button type="button" class="btn btn-success checkout">去結帳</button></a>
                           </div>
                         </td>
                       </tr>
                     </tfoot>
                     {% else %}
                       <tr>
-                        <td colSpan="7"><h3>Your cart is empty :\</h3></td>
+                        <td colSpan="7"><h3>Your cart is empty </h3></td>
                       </tr>
                     </tbody>
                     <tfoot>

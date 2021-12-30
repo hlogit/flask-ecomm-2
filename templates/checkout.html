@@ -10,7 +10,7 @@ Soccer Jersey Store - Home
     <div>
       <div>
         <div>
-          <h5 class="modal-title" id="exampleModalLongTitle">Shopping Cart</h5>
+          <h5 class="modal-title" id="exampleModalLongTitle">Checkout</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           </button>
         </div>
@@ -19,7 +19,7 @@ Soccer Jersey Store - Home
             <div class="container">
               <div class="row">
                 <div class="col-sm">
-                  <table class="table table-sm">
+                  <table class="table table-sm" border=0>
                     <thead>
                       <tr>
                         <th scope="col">#</th>
@@ -39,17 +39,17 @@ Soccer Jersey Store - Home
                         <th scope="row">{{ i + 1 }}</th>
                         <td><img src="/static/img/{{ shoppingCart[i]["image"] }}" width="30px" alt="{{ shoppingCart[i]["team"] }}" /></td>
                         <td>{{ shoppingCart[i]["team"] }}</td>
-                        <td><form action="/update/">
-                            <input type="hidden" name="id" value="{{shoppingCart[i]["id"]}}" />
-                            <input type="number" name="quantity" min="1" max="10" size="5" value="{{ shoppingCart[i]['SUM(qty)'] }}">
-                            <button type="submit" class="btn btn-warning checkout">Update</button>
+                        <td><!--<form action="/update/">
+                            <input type="hidden" name="id" value="{{shoppingCart[i]["id"]}}" />-->
+                            {{ shoppingCart[i]['SUM(qty)'] }}   <!--<input type="number" name="quantity" min="1" max="10" size="5" value="{{ shoppingCart[i]['SUM(qty)'] }}">-->
+                            <!--<button type="submit" class="btn btn-warning checkout">Update</button>-->
                           </form></td>
                         <td>{{ '${:,.2f}'.format(shoppingCart[i]["price"]) }}</td>
                         <td>{{ '${:,.2f}'.format(shoppingCart[i]['SUM(subTotal)']) }}</td>
                         <td>
-                          <form action="/remove/" methods="GET">
+                          <!--<form action="/remove/" methods="GET">
                             <input type="hidden" name="id" value="{{ shoppingCart[i]["id"] }}" />
-                            <button type="submit" class="btn btn-secondary btn-sm" id="removeFromCart">移除</button>
+                            <button type="submit" class="btn btn-secondary btn-sm" id="removeFromCart">移除</button>-->
                           </form>
                         </td>
                       </tr>
@@ -59,9 +59,22 @@ Soccer Jersey Store - Home
                       <tr>
                         <td colSpan="7">Total: {{ '${:,.2f}'.format(total) }}<br /><br />
                           <div class="modal-footer">
-                            <a href="/"><button type="button" class="btn btn-primary checkout">再逛逛</button></a>
-                            <a href="/checkout/"><button type="button" class="btn btn-success checkout">決定了</button></a>
+                      <tr colSpan="8">
+						  <td colSpan="8"><h3>
+						  自行ATM轉帳:帳號:7000-123145689101234<br />
+						  聯絡方式:<br />
+						  電子信箱:<br />
+						  LINE ID:<br />
+						</h3></td>  
+                        <td> 
+                            <form action="/to_pay/"><a href="/to_pay/">
+							<input type="hidden" name="id" value="id" />
+							<input type="hidden" name="total" value="{{total}}" />
+							<button type="button" class="btn btn-success checkout">決定-刷卡</button></a><br/><br/>
+							</form>
+                            <a href="/"><button type="button" class="btn btn-primary checkout">再逛逛</button></a><br />
                           </div>
+						  
                         </td>
                       </tr>
                     </tfoot>

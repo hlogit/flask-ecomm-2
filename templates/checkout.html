@@ -35,6 +35,7 @@ Soccer Jersey Store - Home
                     <!-- For Each shirt -->
                     {% if shopLen != 0 %}
                     {% for i in range(shopLen) %}
+					
                       <tr>
                         <th scope="row">{{ i + 1 }}</th>
                         <td><img src="/static/img/{{ shoppingCart[i]["image"] }}" width="30px" alt="{{ shoppingCart[i]["team"] }}" /></td>
@@ -57,7 +58,8 @@ Soccer Jersey Store - Home
                     {% endfor %}
                     <tfoot>
                       <tr>
-                        <td colSpan="7">Total: {{ '${:,.2f}'.format(total) }}<br /><br />
+                        <td colSpan="7">Total: {{ '${:,.2f}'.format(total) }}<br />
+						收貨地址: _ {{ addr }} _<br /><br />
                           <div class="modal-footer">
                       <tr colSpan="8">
 						  <td colSpan="8"><h3>
@@ -67,10 +69,22 @@ Soccer Jersey Store - Home
 						  LINE ID:<br />
 						</h3></td>  
                         <td> 
-                            <form action="/to_pay/"><a href="/to_pay/">
-							<input type="hidden" name="id" value="id" />
-							<input type="hidden" name="total" value="{{total}}" />
-							<button type="button" class="btn btn-success checkout">決定-刷卡</button></a><br/><br/>
+							
+							<form   target="_blank" action=' {{ ecp_FormData["ecurl"] }}' method="POST">
+                            <input type="hidden" name="CheckMacValue" value='{{ ecp_FormData["CheckMacValue"] }}'>
+                               <input type="hidden" name="ChoosePayment" value='{{ ecp_FormData["ChoosePayment"] }}'>
+                            <input type="hidden" name="EncryptType" value='{{ ecp_FormData["EncryptType"] }}'>
+                            <input type="hidden" name="ItemName" value='{{ ecp_FormData["ItemName"] }}'>
+                            <input type="hidden" name="MerchantID" value='{{ ecp_FormData["MerchantID"] }}'>
+                            <input type="hidden" name="MerchantTradeDate" value='{{ ecp_FormData["MerchantTradeDate"] }}'>
+                            <input type="hidden" name="MerchantTradeNo" value='{{ ecp_FormData["MerchantTradeNo"] }}'>
+                            <input type="hidden" name="PaymentInfoURL" value='{{ ecp_FormData["PaymentInfoURL"] }}'>
+                            <input type="hidden" name="PaymentType" value='{{ ecp_FormData["PaymentType"] }}'>
+                            <input type="hidden" name="ReturnURL" value='{{ ecp_FormData["ReturnURL"] }}'>
+                            <input type="hidden" name="TotalAmount" value='{{ ecp_FormData["TotalAmount"] }}'>
+                            <input type="hidden" name="TradeDesc" value='{{ ecp_FormData["TradeDesc"] }}'>
+							
+							<button type="submit" class="btn btn-success checkout">決定-刷卡</button></a><br/><br/>
 							</form>
                             <a href="/"><button type="button" class="btn btn-primary checkout">再逛逛</button></a><br />
                           </div>

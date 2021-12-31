@@ -47,6 +47,7 @@
                     <tbody>
                     <!-- For Each shirt -->
                     {% if shopLen != 0 %}
+					{{users}}
                     {% for i in range(shopLen) %}
                       <tr>
                         <th scope="row">{{ i + 1 }}</th>
@@ -66,7 +67,8 @@
                     {% endfor %}
                     <tfoot>
                       <tr>
-                        <td colSpan="7">Total: {{ '${:,.2f}'.format(total) }}<br /><br />
+                        <td colSpan="7">Total: {{ '${:,.2f}'.format(total) }}<br />
+						收貨地址: _ {{ addr }} _<br />
                           <div class="modal-footer">
                             <a href="/cart/"><button type="button" class="btn btn-primary checkout">修改訂單</button></a>
                             <button type="button" class="btn btn-primary checkout" data-dismiss="modal">再逛逛</button>

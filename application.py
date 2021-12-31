@@ -21,6 +21,11 @@ db = SQL ( "sqlite:///data.db" )
 def index():
     shirts = db.execute("SELECT * FROM shirts ORDER BY team ASC")
     shirtsLen = len(shirts)
+    w_id = session['uid']
+    users = db.execute(f"SELECT * FROM users  WHERE id='{w_id}' ")
+    print(users)
+    addr = users[0]["address"]
+    print(addr)
     # Initialize variables
     shoppingCart = []
     shopLen = len(shoppingCart)
@@ -33,8 +38,8 @@ def index():
             totItems += shoppingCart[i]["SUM(qty)"]
         shirts = db.execute("SELECT * FROM shirts ORDER BY team ASC")
         shirtsLen = len(shirts)
-        return render_template ("index.html", shoppingCart=shoppingCart, shirts=shirts, shopLen=shopLen, shirtsLen=shirtsLen, total=total, totItems=totItems, display=display, session=session )
-    return render_template ( "index.html", shirts=shirts, shoppingCart=shoppingCart, shirtsLen=shirtsLen, shopLen=shopLen, total=total, totItems=totItems, display=display)
+        return render_template ("index.html", users=users[0], addr=addr, shoppingCart=shoppingCart, shirts=shirts, shopLen=shopLen, shirtsLen=shirtsLen, total=total, totItems=totItems, display=display, session=session )
+    # return render_template ( "index.html", users=users, shirts=shirts, shoppingCart=shoppingCart, shirtsLen=shirtsLen, shopLen=shopLen, total=total, totItems=totItems, display=display)
 
 
 
@@ -108,6 +113,47 @@ def buy():
         return render_template ("index.html", shoppingCart=shoppingCart, shirts=shirts, shopLen=shopLen, shirtsLen=shirtsLen, total=total, totItems=totItems, display=display, session=session )
 
 
+@app.route("/update_addr/", methods=["POST"] )
+def update_addr():
+    # Initialize shopping cart variables
+    shoppingCart = []
+    shopLen = len(shoppingCart)
+    totItems, total, display = 0, 0, 0
+    addr = (request.form.get('addr'))
+    print(addr)
+    print(addr)
+    print(addr)
+    if session:
+        # Store id of the selected shirt
+        w_id = session['uid']
+        db.execute(f"update  users SET address='{addr}' WHERE id = '{w_id}'")
+        '''
+        id = int(request.args.get('id'))
+        # Select info of selected shirt from database
+        goods = db.execute("SELECT * FROM shirts WHERE id = :id", id=id)
+        # Extract values from selected shirt record
+        # Check if shirt is on sale to determine price
+        if(goods[0]["onSale"] == 1):
+            price = goods[0]["onSalePrice"]
+        else:
+            price = goods[0]["price"]
+        team = goods[0]["team"]
+        image = goods[0]["image"]
+        subTotal = qty * price
+        # Insert selected shirt into shopping cart
+        db.execute("INSERT INTO cart (id, qty, team, image, price, subTotal) VALUES (:id, :qty, :team, :image, :price, :subTotal)", id=id, qty=qty, team=team, image=image, price=price, subTotal=subTotal)
+        
+        '''
+        shoppingCart = db.execute("SELECT team, image, SUM(qty), SUM(subTotal), price, id FROM cart GROUP BY team")
+        shopLen = len(shoppingCart)
+        # Rebuild shopping cart
+        for i in range(shopLen):
+            total += shoppingCart[i]["SUM(subTotal)"]
+            totItems += shoppingCart[i]["SUM(qty)"]
+        # Go back to cart page
+        return render_template ("cart.html", addr=addr, shoppingCart=shoppingCart, shopLen=shopLen, total=total, totItems=totItems, display=display, session=session )
+
+
 @app.route("/update/")
 def update():
     # Initialize shopping cart variables
@@ -177,8 +223,8 @@ def filter():
     return render_template ( "index.html", shirts=shirts, shoppingCart=shoppingCart, shirtsLen=shirtsLen, shopLen=shopLen, total=total, totItems=totItems, display=display)
 
 
-@app.route("/checkout2/")
-def checkout2():
+@app.route("/checkout_ori/")
+def checkout_ori():
     order = db.execute("SELECT * from cart")
     # Update purchase history of current customer
     for item in order:
@@ -312,40 +358,31 @@ def cart():
         for i in range(shopLen):
             total += shoppingCart[i]["SUM(subTotal)"]
             totItems += shoppingCart[i]["SUM(qty)"]
+            
+
+    w_id = session['uid']          
+    users = db.execute(f"SELECT * FROM users  WHERE id='{w_id}' ")
+    print(users)
+    addr = users[0]["address"]
     # Render shopping cart
-    return render_template("cart.html", shoppingCart=shoppingCart, shopLen=shopLen, total=total, totItems=totItems, display=display, session=session)
+    return render_template("cart.html", addr=addr, shoppingCart=shoppingCart, shopLen=shopLen, total=total, totItems=totItems, display=display, session=session)
 
 
-
-@app.route("/checkout/")
-def checkout():
-    if 'user' in session:
-        # Clear shopping cart variables
-        totItems, total, display = 0, 0, 0
-        # Grab info currently in database
-        w_id = session['uid']
-        shoppingCart = db.execute(f"SELECT team, image, SUM(qty), SUM(subTotal), price, id FROM cart  WHERE w_id='{w_id}' GROUP BY team")
-        # Get variable values
-        shopLen = len(shoppingCart)
-        for i in range(shopLen):
-            total += shoppingCart[i]["SUM(subTotal)"]
-            totItems += shoppingCart[i]["SUM(qty)"]
-    # Render shopping cart
-    return render_template("checkout.html", shoppingCart=shoppingCart, shopLen=shopLen, total=total, totItems=totItems, display=display, session=session)
-
-@app.route("/to_pay/", methods=['GET'] )
-def to_pay2():
-    total = request.args.get('m')
+#@app.route("/to_pay/", methods=['GET'] )
+def to_pay(total=998):
+    #total = request.args.get('total')
     TotalAmount = total
+    print("---------------------------------------0")
     print(total)
     print(total)
+    print("---------------------------------------0")
     #正式環境：https://payment.ecpay.com.tw/Cashier/QueryTradeInfo/V5
     #測試環境：https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5
     url_real = "https://payment.ecpay.com.tw/Cashier/QueryTradeInfo/V5"   # v5
     url = "https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5"   # v5
     form_html0 =""
     form_html0="<form   target=\"_blank\" action=\"%s\" method=\"POST\">\n"%(url)
-    this_server_ip= "220.229.9.35"
+    this_server_ip= "220.229.9.32"
     this_server_port= "5000"
     PaymentInfoURL= "http://%s:%s/getData1"%(this_server_ip,this_server_port)
     ReturnURL= "http://%s:%s/getData1"%(this_server_ip,this_server_port)
@@ -361,6 +398,20 @@ def to_pay2():
     #CheckMacValue = hashlib.sha256(stt).hexdigest()
     header = {"content-type": "application/x-www-form-urlencoded;charset=utf-8"}
     #'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+    FormData2 = {"ChoosePayment": 'Credit',
+    "EncryptType": 1,
+    "MerchantTradeDate": '2021/10/20 04:35:18',
+    "PaymentType": 'aio',
+    "ItemName": 'nnntesst6a#nnntesst2#nnntesst3',
+    "MerchantTradeNo": MerchantTradeNo,
+    "PaymentInfoURL":PaymentInfoURL,
+    "ReturnURL": ReturnURL, 
+    "TotalAmount": total,
+    "TradeDesc": 'nnnpay', 
+    "MerchantID": '2000132',
+    "ecurl": url,
+    }
+
     FormData = {"ChoosePayment": 'Credit',
     "EncryptType": 1,
     "MerchantTradeDate": '2021/10/20 04:35:18',
@@ -381,12 +432,12 @@ def to_pay2():
     #print( "==od==")
     o_sorted_vars = ""
     for key in sorted(FormData):
-        #print( "==sorted od==")
+        # #print( "==sorted od==")
         vars = "%s=%s&" %(key,FormData[key])
-        print ("%s=%s" %(key,FormData[key]))
+        # print ("%s=%s" %(key,FormData[key]))
         o_sorted_vars += vars
     #pprint.pprint( od)
-    print(FormData)
+    # print(FormData)
 
     new_vars = "HashKey=%s%sHashIV=%s" % ("5294y06JbISpM5x9&",o_sorted_vars, "v77hoKGq4kWxNNIS")
     vars_str_urlencode = urllib.parse.quote_plus(new_vars)
@@ -394,16 +445,50 @@ def to_pay2():
     CheckMacValue = (hashlib.sha256(vars_str_urlencode_lower.encode('utf-8')).hexdigest())
 
     FormData.update({'CheckMacValue': CheckMacValue.upper()})
+    FormData2.update({'CheckMacValue': CheckMacValue.upper()})
+    print("---------------------------------------1")
     for key in sorted(FormData):
         v = FormData[key]
         form_html0+="   <input type=\"hidden\" name=\"%s\" value=\"%s\">\n" %(key,v)
     form_html0+="   <input type=\"text\"  value=\"%s\"  readonly>\n" %(TotalAmount)
     form_html0+="   <input type=\"submit\" value=\"Submit\">\n</form>"
-    print(form_html0)
+    #print(form_html0)
+    print(FormData)
+    print("---------------------------------------1")
         
-    return form_html0
+    return (FormData2)
 
-    
+  
+
+@app.route("/checkout/")
+def checkout():
+
+    if 'user' in session:
+        # Clear shopping cart variables
+        
+        totItems, total, display = 0, 0, 0
+        # Grab info currently in database
+        w_id = session['uid']
+        shoppingCart = db.execute(f"SELECT team, image, SUM(qty), SUM(subTotal), price, id FROM cart  WHERE w_id='{w_id}' GROUP BY team")
+        # Get variable values
+        shopLen = len(shoppingCart)
+        users = db.execute(f"SELECT * FROM users  WHERE id='{w_id}' ")
+        addr = users[0]["address"]
+        for i in range(shopLen):
+            total += round(shoppingCart[i]["SUM(subTotal)"])
+            totItems += shoppingCart[i]["SUM(qty)"]
+    # Render shopping cart
+        ecp_FormData2 = to_pay(total)
+
+        
+        # ecp_hidden = unicode(ecp_hidden, "utf-8")
+        print("a-------------------2")
+        print(ecp_FormData2)
+        print("a-------------------2")
+        print(type(ecp_FormData2))
+        print("a-------------------")
+    return render_template("checkout.html", addr=addr, shoppingCart=shoppingCart, ecp_FormData=ecp_FormData2, shopLen=shopLen, total=total, totItems=totItems, display=display, session=session)
+  
 @app.route("/getData1", methods=['POST', 'GET'])
 def getInfo():
 	print( "==getInfo==")

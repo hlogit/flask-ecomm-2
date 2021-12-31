@@ -2,6 +2,7 @@ from cs50 import SQL
 from flask_session import Session
 from flask import Flask, render_template, redirect, request, session, jsonify
 import datetime
+from datetime import datetime
 import collections
 import urllib
 import hashlib
@@ -20,13 +21,7 @@ db = SQL ( "sqlite:///data.db" )
 @app.route("/")
 def index():
     shirts = db.execute("SELECT * FROM shirts ORDER BY team ASC")
-    shirtsLen = len(shirts)
-    w_id = session['uid']
-    users = db.execute(f"SELECT * FROM users  WHERE id='{w_id}' ")
-    print(users)
-    addr = users[0]["address"]
-    print(addr)
-    # Initialize variables
+    shirtsLen = len(shirts)    # Initialize variables
     shoppingCart = []
     shopLen = len(shoppingCart)
     totItems, total, display = 0, 0, 0
@@ -38,8 +33,13 @@ def index():
             totItems += shoppingCart[i]["SUM(qty)"]
         shirts = db.execute("SELECT * FROM shirts ORDER BY team ASC")
         shirtsLen = len(shirts)
+        w_id = session['uid']
+        users = db.execute(f"SELECT * FROM users  WHERE id='{w_id}' ")
+        print(users)
+        addr = users[0]["address"]
+        print(addr)
         return render_template ("index.html", users=users[0], addr=addr, shoppingCart=shoppingCart, shirts=shirts, shopLen=shopLen, shirtsLen=shirtsLen, total=total, totItems=totItems, display=display, session=session )
-    # return render_template ( "index.html", users=users, shirts=shirts, shoppingCart=shoppingCart, shirtsLen=shirtsLen, shopLen=shopLen, total=total, totItems=totItems, display=display)
+    return render_template ( "index.html", shirts=shirts, shoppingCart=shoppingCart, shirtsLen=shirtsLen, shopLen=shopLen, total=total, totItems=totItems, display=display)
 
 
 

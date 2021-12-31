@@ -58,10 +58,9 @@ Soccer Jersey Store - Home
                     <tfoot>
                       <tr>
                         <td colSpan="7">Total: {{ '${:,.2f}'.format(total) }}<br /><br />
-						<td><form action="/update_addr/" method="POST">
+						<td>
                             收貨地址:
-                            <input type="text" name="addr" min="1" max="10" size="5" value="{{ addr }}">
-                            <button type="submit" class="btn btn-warning checkout">Update</button>
+                            {{ addr }}
 						
                           <div class="modal-footer">
                             <a href="/"><button type="button" class="btn btn-primary checkout">再逛逛</button></a>

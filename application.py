@@ -2,7 +2,6 @@ from cs50 import SQL
 from flask_session import Session
 from flask import Flask, render_template, redirect, request, session, jsonify
 import datetime
-from datetime import datetime
 import collections
 import urllib
 import hashlib
@@ -113,16 +112,17 @@ def buy():
         return render_template ("index.html", shoppingCart=shoppingCart, shirts=shirts, shopLen=shopLen, shirtsLen=shirtsLen, total=total, totItems=totItems, display=display, session=session )
 
 
-@app.route("/update_addr/", methods=["POST"] )
+@app.route("/update_addr/", methods=['POST'])
 def update_addr():
-    # Initialize shopping cart variables
+    # Initialize shopping cart variables  苗栗縣7
     shoppingCart = []
     shopLen = len(shoppingCart)
     totItems, total, display = 0, 0, 0
     addr = (request.form.get('addr'))
+    # addr = (request.args.get('addr'))
     print(addr)
     print(addr)
-    print(addr)
+    print(request.form)
     if session:
         # Store id of the selected shirt
         w_id = session['uid']
@@ -292,7 +292,7 @@ def logged():
     # If username and password match a record in database, set session variables
     if len(rows) == 1:
         session['user'] = user
-        session['time'] = datetime.now( )
+        session['time'] = datetime.datetime.now( )
         session['uid'] = rows[0]["id"]
     # Redirect to Home Page
     if 'user' in session:
